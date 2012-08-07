@@ -25,6 +25,10 @@
 #define RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH 320.0
 
 @implementation RZSplitViewController
+@synthesize viewControllers = _viewControllers;
+@synthesize delegate = _delegate;
+@synthesize collapseBarButton = _collapseBarButton;
+@synthesize collapsed = _collapsed;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
