@@ -14,6 +14,8 @@
 
 @property (copy, nonatomic) NSArray *viewControllers;
 @property (weak, nonatomic) id <RZSplitViewControllerDelegate> delegate;        // Not used yet
+@property (strong, nonatomic) UIImage *collapseBarButtonImage;
+@property (strong, nonatomic) UIImage *expandBarButtonImage;
 @property (strong, nonatomic, readonly) UIBarButtonItem *collapseBarButton;
 @property (assign, nonatomic, getter = isCollapsed) BOOL collapsed;
 

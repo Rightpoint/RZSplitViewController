@@ -18,6 +18,8 @@
 - (void)layoutViewControllers;
 - (void)layoutViewsForCollapsed:(BOOL)collapsed animated:(BOOL)animated;
 
+- (void)configureCollapseButton:(UIBarButtonItem*)collapseButton forCollapsed:(BOOL)collapsed;
+
 - (void)collapseBarButtonTapped:(id)sender;
 
 @end
@@ -27,6 +29,8 @@
 @implementation RZSplitViewController
 @synthesize viewControllers = _viewControllers;
 @synthesize delegate = _delegate;
+@synthesize collapseBarButtonImage = _collapseBarButtonImage;
+@synthesize expandBarButtonImage = _expandBarButtonImage;
 @synthesize collapseBarButton = _collapseBarButton;
 @synthesize collapsed = _collapsed;
 
@@ -102,11 +106,33 @@
     [self layoutViewControllers];
 }
 
+- (void)setCollapseBarButtonImage:(UIImage *)collapseBarButtonImage
+{
+    _collapseBarButtonImage = collapseBarButtonImage;
+    
+    if (!self.collapsed)
+    {
+        [_collapseBarButton setImage:_collapseBarButtonImage];
+    }
+}
+
+- (void)setExpandBarButtonImage:(UIImage *)expandBarButtonImage
+{
+    _expandBarButtonImage = expandBarButtonImage;
+    
+    if (self.collapsed)
+    {
+        [_collapseBarButton setImage:_expandBarButtonImage];
+    }
+}
+
 - (UIBarButtonItem*)collapseBarButton
 {
     if (nil == _collapseBarButton)
     {
         _collapseBarButton = [[UIBarButtonItem alloc] initWithTitle:(self.collapsed ? @">>" : @"<<") style:UIBarButtonItemStylePlain target:self action:@selector(collapseBarButtonTapped:)];
+        
+        [self configureCollapseButton:_collapseBarButton forCollapsed:self.collapsed];
     }
     
     return _collapseBarButton;
@@ -223,17 +249,45 @@
     }
 }
 
+- (void)configureCollapseButton:(UIBarButtonItem*)collapseButton forCollapsed:(BOOL)collapsed
+{
+    if (collapsed)
+    {
+        if (self.expandBarButtonImage)
+        {
+            [collapseButton setImage:self.expandBarButtonImage];
+        }
+        else if (self.collapseBarButtonImage)
+        {
+            [collapseButton setImage:self.collapseBarButtonImage];
+        }
+        else
+        {
+            [collapseButton setTitle:@">>"];
+        }
+    }
+    else
+    {
+        if (self.collapseBarButtonImage)
+        {
+            [collapseButton setImage:self.collapseBarButtonImage];
+        }
+        else
+        {
+            [collapseButton setTitle:@"<<"];
+        }
+    }
+}
+
 #pragma mark - Action Methods
 
 - (void)collapseBarButtonTapped:(id)sender
 {
     BOOL collapsed = !self.collapsed;
     
-    NSString *buttonTitle = (collapsed) ? @">>" : @"<<";
-    
     UIBarButtonItem *buttonItem = (UIBarButtonItem*)sender;
     
-    buttonItem.title = buttonTitle;
+    [self configureCollapseButton:buttonItem forCollapsed:collapsed];
     
     [self setCollapsed:collapsed animated:YES];
 }
