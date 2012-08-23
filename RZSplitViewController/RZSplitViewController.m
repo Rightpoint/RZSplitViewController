@@ -66,7 +66,7 @@
 {
     [super viewWillAppear:animated];
     
-    [self layoutViewsForCollapsed:self.collapsed animated:animated];
+    [self layoutViewsForCollapsed:self.collapsed animated:NO];
 }
 
 - (void)viewDidUnload
