@@ -9,6 +9,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import "RZSplitViewController.h"
 
+#define kRZSplitViewMasterIndex 0
+#define kRZSplitViewDetailIndex 1
+
 @interface RZSplitViewController () <UINavigationControllerDelegate>
 
 @property (strong, nonatomic, readwrite) UIBarButtonItem *collapseBarButton;
@@ -126,6 +129,30 @@
     }
 }
 
+- (void)setDetailViewController:(UIViewController*)detailVC
+{
+    NSAssert(detailVC != nil, @"The detail view controller must not be nil");
+    
+    if (detailVC)
+    {
+        NSMutableArray* updatedViewControllers = [[self viewControllers] mutableCopy];
+        [updatedViewControllers setObject:detailVC atIndexedSubscript:kRZSplitViewDetailIndex];
+        [self setViewControllers:updatedViewControllers];
+    }
+}
+
+- (void)setMasterViewController:(UIViewController*)masterVC
+{
+    NSAssert(masterVC != nil, @"The master view controller must not be nil");
+    
+    if (masterVC)
+    {
+        NSMutableArray* updatedViewControllers = [[self viewControllers] mutableCopy];
+        [updatedViewControllers setObject:masterVC atIndexedSubscript:kRZSplitViewMasterIndex];
+        [self setViewControllers:updatedViewControllers];
+    }
+}
+
 - (UIBarButtonItem*)collapseBarButton
 {
     if (nil == _collapseBarButton)
@@ -161,8 +188,8 @@
 
 - (void)layoutViewControllers
 {
-    UIViewController *masterVC = [self.viewControllers objectAtIndex:0];
-    UIViewController *detailVC = [self.viewControllers objectAtIndex:1];
+    UIViewController *masterVC = [self.viewControllers objectAtIndex:kRZSplitViewMasterIndex];
+    UIViewController *detailVC = [self.viewControllers objectAtIndex:kRZSplitViewDetailIndex];
     
     UIViewAutoresizing masterAutoResizing = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
     UIViewAutoresizing detailAutoResizing = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;

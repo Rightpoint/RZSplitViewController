@@ -20,6 +20,8 @@
 @property (assign, nonatomic, getter = isCollapsed) BOOL collapsed;
 
 - (void)setCollapsed:(BOOL)collapsed animated:(BOOL)animated;
+- (void)setDetailViewController:(UIViewController*)detailVC;
+- (void)setMasterViewController:(UIViewController*)masterVC;
 
 @end
 
