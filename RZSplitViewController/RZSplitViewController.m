@@ -131,6 +131,8 @@
 
 - (void)setDetailViewController:(UIViewController*)detailVC
 {
+    NSAssert(detailVC != nil, @"The detail view controller must not be nil");
+    
     if (detailVC)
     {
         NSMutableArray* updatedViewControllers = [[self viewControllers] mutableCopy];
@@ -141,6 +143,8 @@
 
 - (void)setMasterViewController:(UIViewController*)masterVC
 {
+    NSAssert(masterVC != nil, @"The master view controller must not be nil");
+    
     if (masterVC)
     {
         NSMutableArray* updatedViewControllers = [[self viewControllers] mutableCopy];
