@@ -18,6 +18,7 @@
 @property (strong, nonatomic) UIImage *expandBarButtonImage;
 @property (strong, nonatomic, readonly) UIBarButtonItem *collapseBarButton;
 @property (assign, nonatomic, getter = isCollapsed) BOOL collapsed;
+@property (nonatomic, assign) CGFloat masterWidth;
 
 - (void)setCollapsed:(BOOL)collapsed animated:(BOOL)animated;
 - (void)setDetailViewController:(UIViewController*)detailVC;

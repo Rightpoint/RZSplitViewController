@@ -15,6 +15,7 @@
 @interface RZSplitViewController () <UINavigationControllerDelegate>
 
 @property (strong, nonatomic, readwrite) UIBarButtonItem *collapseBarButton;
+@property (nonatomic, assign) BOOL usingCustomMasterWidth;
 
 - (void)initializeSplitViewController;
 
@@ -42,6 +43,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        self.usingCustomMasterWidth = NO;
         [self initializeSplitViewController];
     }
     return self;
@@ -50,6 +52,12 @@
 - (void)awakeFromNib
 {
     [self initializeSplitViewController];
+}
+
+- (void)setMasterWidth:(CGFloat)masterWidth
+{
+    self.usingCustomMasterWidth = YES;
+    _masterWidth = masterWidth;
 }
 
 - (void)initializeSplitViewController
@@ -227,11 +235,12 @@
     UIViewController *detailVC = [self.viewControllers objectAtIndex:1];
     
     CGRect viewBounds = self.view.bounds;
+    CGFloat masterWidth = self.usingCustomMasterWidth ? self.masterWidth : RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH;
     
     if (collapsed)
     {
         layoutBlock = ^(void){
-            CGRect masterFrame = CGRectMake(-RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH, 0, RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH+1.0, viewBounds.size.height);
+            CGRect masterFrame = CGRectMake(-masterWidth, 0, masterWidth+1.0, viewBounds.size.height);
             CGRect detailFrame = CGRectMake(0, 0, viewBounds.size.width, viewBounds.size.height);
             
             masterVC.view.frame = masterFrame;
@@ -245,12 +254,14 @@
     else
     {
         [self.view addSubview:masterVC.view];
-        masterVC.view.frame = CGRectMake(-RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH, 0, RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH+1.0, viewBounds.size.height);
+        
+        
+        masterVC.view.frame = CGRectMake(-masterWidth, 0, masterWidth+1.0, viewBounds.size.height);
         
         
         layoutBlock = ^(void){
-            CGRect masterFrame = CGRectMake(0, 0, RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH+1.0, viewBounds.size.height);
-            CGRect detailFrame = CGRectMake(RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH, 0, viewBounds.size.width - (RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH ), viewBounds.size.height);
+            CGRect masterFrame = CGRectMake(0, 0, masterWidth+1.0, viewBounds.size.height);
+            CGRect detailFrame = CGRectMake(masterWidth, 0, viewBounds.size.width - (masterWidth ), viewBounds.size.height);
             
             masterVC.view.frame = masterFrame;
             detailVC.view.frame = detailFrame;
