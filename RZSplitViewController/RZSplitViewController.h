@@ -19,6 +19,10 @@
 @property (strong, nonatomic, readonly) UIBarButtonItem *collapseBarButton;
 @property (assign, nonatomic, getter = isCollapsed) BOOL collapsed;
 @property (nonatomic, assign) CGFloat masterWidth;
+@property (strong, nonatomic) UIColor* viewBorderColor;
+@property (nonatomic, assign) CGFloat viewCornerRadius;
+@property (nonatomic, assign) CGFloat viewBorderWidth;
+
 
 @property (nonatomic, readonly) UIViewController *masterViewController;
 @property (nonatomic, readonly) UIViewController *detailViewController;
