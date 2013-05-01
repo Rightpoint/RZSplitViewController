@@ -93,6 +93,16 @@
 
 #pragma mark - Property Accessor Overrides
 
+- (UIViewController*)masterViewController
+{
+    return [self.viewControllers objectAtIndex:kRZSplitViewMasterIndex];
+}
+
+- (UIViewController*)detailViewController
+{
+    return [self.viewControllers objectAtIndex:kRZSplitViewDetailIndex];
+}
+
 - (void)setViewControllers:(NSArray *)viewControllers
 {
     NSAssert(2 == [viewControllers count], @"You must have exactly 2 view controllers in the array. This array has %d.", [viewControllers count]);

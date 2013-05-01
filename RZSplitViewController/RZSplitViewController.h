@@ -20,6 +20,9 @@
 @property (assign, nonatomic, getter = isCollapsed) BOOL collapsed;
 @property (nonatomic, assign) CGFloat masterWidth;
 
+@property (nonatomic, readonly) UIViewController *masterViewController;
+@property (nonatomic, readonly) UIViewController *detailViewController;
+
 - (void)setCollapsed:(BOOL)collapsed animated:(BOOL)animated;
 - (void)setDetailViewController:(UIViewController*)detailVC;
 - (void)setMasterViewController:(UIViewController*)masterVC;
