@@ -15,6 +15,7 @@
 @interface RZSplitViewController () <UINavigationControllerDelegate>
 
 @property (strong, nonatomic, readwrite) UIBarButtonItem *collapseBarButton;
+@property (nonatomic, assign) BOOL usingCustomMasterWidth;
 
 - (void)initializeSplitViewController;
 
@@ -28,6 +29,8 @@
 @end
 
 #define RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH 320.0
+#define RZSPLITVIEWCONTROLLER_DEFAULT_CORNER_RADIUS 4.0f
+#define RZSPLITVIEWCONTROLLER_DEFAULT_BORDER_WIDTH 1.0f
 
 @implementation RZSplitViewController
 @synthesize viewControllers = _viewControllers;
@@ -36,12 +39,16 @@
 @synthesize expandBarButtonImage = _expandBarButtonImage;
 @synthesize collapseBarButton = _collapseBarButton;
 @synthesize collapsed = _collapsed;
+@synthesize viewBorderColor = _viewBorderColor;
+@synthesize viewBorderWidth = _viewBorderWidth;
+@synthesize viewCornerRadius = _viewCornerRadius;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        self.usingCustomMasterWidth = NO;
         [self initializeSplitViewController];
     }
     return self;
@@ -52,9 +59,17 @@
     [self initializeSplitViewController];
 }
 
+- (void)setMasterWidth:(CGFloat)masterWidth
+{
+    self.usingCustomMasterWidth = YES;
+    _masterWidth = masterWidth;
+}
+
 - (void)initializeSplitViewController
 {
-    
+    self.viewCornerRadius = RZSPLITVIEWCONTROLLER_DEFAULT_CORNER_RADIUS;
+    self.viewBorderWidth = RZSPLITVIEWCONTROLLER_DEFAULT_BORDER_WIDTH;
+    self.viewBorderColor = [UIColor blackColor];
 }
 
 - (void)viewDidLoad
@@ -84,6 +99,16 @@
 }
 
 #pragma mark - Property Accessor Overrides
+
+- (UIViewController*)masterViewController
+{
+    return [self.viewControllers objectAtIndex:kRZSplitViewMasterIndex];
+}
+
+- (UIViewController*)detailViewController
+{
+    return [self.viewControllers objectAtIndex:kRZSplitViewDetailIndex];
+}
 
 - (void)setViewControllers:(NSArray *)viewControllers
 {
@@ -199,18 +224,18 @@
     masterVC.view.autoresizesSubviews = YES;
     masterVC.view.clipsToBounds = YES;
     
-    masterVC.view.layer.borderWidth = 1.0;
-    masterVC.view.layer.borderColor = [[UIColor blackColor] CGColor];
-    masterVC.view.layer.cornerRadius = 4.0;
+    masterVC.view.layer.borderWidth = self.viewBorderWidth;
+    masterVC.view.layer.borderColor = [self.viewBorderColor CGColor];
+    masterVC.view.layer.cornerRadius = self.viewCornerRadius;
     
     detailVC.view.contentMode = UIViewContentModeScaleToFill;
     detailVC.view.autoresizingMask = detailAutoResizing;
     detailVC.view.autoresizesSubviews = YES;
     detailVC.view.clipsToBounds = YES;
     
-    detailVC.view.layer.borderWidth = 1.0;
-    detailVC.view.layer.borderColor = [[UIColor blackColor] CGColor];
-    detailVC.view.layer.cornerRadius = 4.0;
+    detailVC.view.layer.borderWidth = self.viewBorderWidth;
+    detailVC.view.layer.borderColor = [self.viewBorderColor CGColor];
+    detailVC.view.layer.cornerRadius = self.viewCornerRadius;
     
     [self.view addSubview:masterVC.view];
     [self.view addSubview:detailVC.view];
@@ -227,11 +252,12 @@
     UIViewController *detailVC = [self.viewControllers objectAtIndex:1];
     
     CGRect viewBounds = self.view.bounds;
+    CGFloat masterWidth = self.usingCustomMasterWidth ? self.masterWidth : RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH;
     
     if (collapsed)
     {
         layoutBlock = ^(void){
-            CGRect masterFrame = CGRectMake(-RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH, 0, RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH+1.0, viewBounds.size.height);
+            CGRect masterFrame = CGRectMake(-masterWidth, 0, masterWidth+1.0, viewBounds.size.height);
             CGRect detailFrame = CGRectMake(0, 0, viewBounds.size.width, viewBounds.size.height);
             
             masterVC.view.frame = masterFrame;
@@ -251,9 +277,12 @@
         masterVC.view.frame = CGRectMake(-RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH, 0, RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH+1.0, viewBounds.size.height);
         
         
+        masterVC.view.frame = CGRectMake(-masterWidth, 0, masterWidth+1.0, viewBounds.size.height);
+        
+        
         layoutBlock = ^(void){
-            CGRect masterFrame = CGRectMake(0, 0, RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH+1.0, viewBounds.size.height);
-            CGRect detailFrame = CGRectMake(RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH, 0, viewBounds.size.width - (RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH ), viewBounds.size.height);
+            CGRect masterFrame = CGRectMake(0, 0, masterWidth+1.0, viewBounds.size.height);
+            CGRect detailFrame = CGRectMake(masterWidth, 0, viewBounds.size.width - (masterWidth ), viewBounds.size.height);
             
             masterVC.view.frame = masterFrame;
             detailVC.view.frame = detailFrame;
