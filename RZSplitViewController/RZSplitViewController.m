@@ -270,7 +270,11 @@
     }
     else
     {
-        [self.view addSubview:masterVC.view];
+        if (masterVC.view.superview != self.view)
+        {
+            [self.view addSubview:masterVC.view];
+        }
+        masterVC.view.frame = CGRectMake(-RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH, 0, RZSPLITVIEWCONTROLLER_DEFAULT_MASTER_WIDTH+1.0, viewBounds.size.height);
         
         
         masterVC.view.frame = CGRectMake(-masterWidth, 0, masterWidth+1.0, viewBounds.size.height);
